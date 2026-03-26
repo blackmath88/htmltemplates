@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AtlasFlow — Linear Startup template. Dark-mode product site with gradient hero and glassmorphism cards." />
+  <title>AtlasFlow · Linear Startup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <style>
+    /* ============================================================
+       Template 02 — Linear Startup
+       Dark mode · gradients · glassmorphism · Inter
+       ============================================================ */
+
+    :root {
+      --ln-bg:        #080812;
+      --ln-surface:   #0F0F1E;
+      --ln-glass:     rgba(255,255,255,.05);
+      --ln-glass-b:   rgba(255,255,255,.08);
+      --ln-border:    rgba(255,255,255,.1);
+      --ln-purple:    #7C3AED;
+      --ln-violet:    #5B21B6;
+      --ln-blue:      #2563EB;
+      --ln-cyan:      #06B6D4;
+      --ln-green:     #10B981;
+      --ln-amber:     #F59E0B;
+      --ln-text:      #F0F0FF;
+      --ln-muted:     #8B8BA7;
+      --ln-grad:      linear-gradient(135deg, var(--ln-purple) 0%, var(--ln-blue) 100%);
+      --ln-grad-soft: linear-gradient(135deg, rgba(124,58,237,.15) 0%, rgba(37,99,235,.15) 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ln-bg);
+      color: var(--ln-text);
+      font-family: var(--af-font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 2px solid var(--ln-purple); outline-offset: 3px; border-radius: 4px; }
+
+    /* ---- Back link ---- */
+    .back-link {
+      position: fixed; top: 20px; left: 20px; z-index: 300;
+      background: var(--ln-glass);
+      border: 1px solid var(--ln-border);
+      backdrop-filter: blur(12px);
+      color: var(--ln-muted);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      transition: all 200ms;
+    }
+    .back-link:hover { color: var(--ln-text); border-color: var(--ln-purple); }
+
+    /* ---- Navbar ---- */
+    .ln-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--af-space-8);
+      height: 64px;
+      background: rgba(8,8,18,.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--ln-border);
+    }
+    .ln-nav__logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 1.1rem;
+    }
+    .ln-nav__logo-icon {
+      width: 28px; height: 28px;
+      background: var(--ln-grad);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900;
+    }
+    .ln-nav__links {
+      display: flex; gap: 32px; list-style: none;
+    }
+    .ln-nav__links a {
+      font-size: 14px; color: var(--ln-muted);
+      transition: color 150ms;
+    }
+    .ln-nav__links a:hover { color: var(--ln-text); }
+    .ln-nav__cta {
+      display: flex; gap: 12px; align-items: center;
+    }
+    .ln-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms;
+      border: 1px solid transparent;
+    }
+    .ln-btn--ghost {
+      color: var(--ln-muted);
+      background: transparent;
+      border-color: transparent;
+    }
+    .ln-btn--ghost:hover { color: var(--ln-text); }
+    .ln-btn--primary {
+      background: var(--ln-grad);
+      color: #fff;
+    }
+    .ln-btn--primary:hover { opacity: .9; }
+    .ln-btn--outline {
+      background: transparent;
+      color: var(--ln-text);
+      border-color: var(--ln-border);
+    }
+    .ln-btn--outline:hover { border-color: var(--ln-purple); }
+
+    /* ==============================
+       HERO
+       ============================== */
+    .ln-hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px var(--af-space-8) var(--af-space-24);
+      position: relative;
+      overflow: hidden;
+    }
+    /* Glow orbs */
+    .ln-hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%; transform: translateX(-60%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(124,58,237,.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .ln-hero::after {
+      content: '';
+      position: absolute;
+      top: -100px; left: 50%; transform: translateX(-10%);
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(37,99,235,.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .ln-hero__badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--ln-glass);
+      border: 1px solid var(--ln-border);
+      backdrop-filter: blur(8px);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ln-muted);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      position: relative; z-index: 1;
+    }
+    .ln-hero__badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--ln-green);
+      box-shadow: 0 0 6px var(--ln-green);
+    }
+    .ln-hero__title {
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -.03em;
+      margin-bottom: 24px;
+      position: relative; z-index: 1;
+    }
+    .ln-hero__title .grad {
+      background: var(--ln-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .ln-hero__sub {
+      font-size: 1.2rem;
+      color: var(--ln-muted);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+      position: relative; z-index: 1;
+    }
+    .ln-hero__cta {
+      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+      position: relative; z-index: 1;
+      margin-bottom: 64px;
+    }
+    .ln-btn--lg {
+      padding: 14px 28px;
+      font-size: 16px;
+      border-radius: 10px;
+    }
+    .ln-hero__social-proof {
+      display: flex; gap: 32px; align-items: center; justify-content: center;
+      flex-wrap: wrap;
+      position: relative; z-index: 1;
+    }
+    .ln-sp-item {
+      text-align: center;
+    }
+    .ln-sp-item__value {
+      font-size: 1.75rem;
+      font-weight: 900;
+      background: var(--ln-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .ln-sp-item__label {
+      font-size: 12px;
+      color: var(--ln-muted);
+      margin-top: 2px;
+    }
+    .ln-sp-divider {
+      width: 1px; height: 40px;
+      background: var(--ln-border);
+    }
+
+    /* ==============================
+       SHARED SECTION WRAPPER
+       ============================== */
+    .ln-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: var(--af-space-24) var(--af-space-8);
+    }
+    .ln-section-eyebrow {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--ln-purple);
+      margin-bottom: 16px;
+    }
+    .ln-section-eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--ln-purple);
+    }
+    .ln-section-title {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 900;
+      letter-spacing: -.02em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .ln-section-sub {
+      font-size: 1.05rem;
+      color: var(--ln-muted);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 56px;
+    }
+
+    /* Glassmorphism card */
+    .ln-card {
+      background: var(--ln-glass);
+      border: 1px solid var(--ln-border);
+      border-radius: 16px;
+      padding: var(--af-space-8);
+      backdrop-filter: blur(8px);
+      transition: border-color 200ms, transform 200ms;
+    }
+    .ln-card:hover {
+      border-color: rgba(124,58,237,.5);
+      transform: translateY(-2px);
+    }
+
+    /* ==============================
+       EXEC SUMMARY
+       ============================== */
+    .ln-exec__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--af-space-6);
+    }
+    .ln-exec__lead {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: var(--ln-text);
+      margin-bottom: var(--af-space-4);
+    }
+    .ln-exec__body {
+      font-size: 1rem;
+      color: var(--ln-muted);
+      line-height: 1.7;
+    }
+    .ln-exec__highlight {
+      background: var(--ln-grad-soft);
+      border: 1px solid rgba(124,58,237,.3);
+      border-radius: 12px;
+      padding: var(--af-space-6);
+    }
+    .ln-exec__highlight-quote {
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--ln-text);
+      line-height: 1.6;
+      margin-bottom: var(--af-space-4);
+    }
+    .ln-exec__highlight-attr {
+      font-size: 13px;
+      color: var(--ln-muted);
+    }
+
+    /* ==============================
+       PROBLEM
+       ============================== */
+    .ln-problem__cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--af-space-4);
+      margin-bottom: var(--af-space-8);
+    }
+    .ln-problem__icon {
+      font-size: 2rem;
+      margin-bottom: var(--af-space-4);
+    }
+    .ln-problem__title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: var(--af-space-2);
+    }
+    .ln-problem__body {
+      font-size: 14px;
+      color: var(--ln-muted);
+      line-height: 1.65;
+    }
+    .ln-stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--af-space-4);
+    }
+    .ln-stat-card {
+      background: var(--ln-grad-soft);
+      border: 1px solid rgba(124,58,237,.2);
+      border-radius: 12px;
+      padding: var(--af-space-6);
+      text-align: center;
+    }
+    .ln-stat-card__value {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: var(--ln-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .ln-stat-card__label {
+      font-size: 12px;
+      color: var(--ln-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    /* ==============================
+       INSIGHT
+       ============================== */
+    .ln-insight__grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: var(--af-space-8);
+      align-items: start;
+    }
+    .ln-insight__pull {
+      font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+      font-weight: 700;
+      line-height: 1.35;
+      background: var(--ln-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: var(--af-space-6);
+    }
+    .ln-insight__body {
+      font-size: 15px;
+      color: var(--ln-muted);
+      line-height: 1.7;
+    }
+    .ln-market-table {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--ln-border);
+    }
+    .ln-market-table__header {
+      background: var(--ln-glass-b);
+      padding: 12px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--ln-muted);
+    }
+    .ln-market-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 20px;
+      border-top: 1px solid var(--ln-border);
+    }
+    .ln-market-row__label { font-size: 14px; color: var(--ln-muted); }
+    .ln-market-row__value { font-size: 14px; font-weight: 700; color: var(--ln-text); }
+
+    /* ==============================
+       SOLUTION / ARCH
+       ============================== */
+    .ln-arch {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--af-space-4);
+      margin-bottom: var(--af-space-10);
+    }
+    .ln-arch__layer {
+      background: var(--ln-glass);
+      border: 1px solid var(--ln-border);
+      border-radius: 12px;
+      padding: var(--af-space-6);
+      position: relative;
+      overflow: hidden;
+    }
+    .ln-arch__layer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--ln-grad);
+    }
+    .ln-arch__num {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--ln-purple);
+      margin-bottom: 12px;
+    }
+    .ln-arch__title {
+      font-size: 1rem; font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .ln-arch__body {
+      font-size: 13px; color: var(--ln-muted); line-height: 1.6;
+    }
+    .ln-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--af-space-4);
+    }
+    .ln-feature {
+      display: flex; gap: var(--af-space-4); align-items: flex-start;
+    }
+    .ln-feature__icon {
+      width: 40px; height: 40px;
+      background: var(--ln-grad-soft);
+      border: 1px solid rgba(124,58,237,.3);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .ln-feature__title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .ln-feature__body { font-size: 13px; color: var(--ln-muted); line-height: 1.6; }
+
+    /* ==============================
+       PROOF / METRICS
+       ============================== */
+    .ln-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--af-space-4);
+      margin-bottom: var(--af-space-8);
+    }
+    .ln-metric-card {
+      background: var(--ln-glass);
+      border: 1px solid var(--ln-border);
+      border-radius: 12px;
+      padding: var(--af-space-6);
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .ln-metric-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--ln-grad);
+    }
+    .ln-metric-card__value {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: var(--ln-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .ln-metric-card__label {
+      font-size: 12px;
+      color: var(--ln-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .ln-testimonial {
+      background: var(--ln-glass);
+      border: 1px solid var(--ln-border);
+      border-radius: 16px;
+      padding: var(--af-space-10);
+      position: relative;
+    }
+    .ln-testimonial__quote-mark {
+      font-size: 5rem;
+      line-height: 1;
+      font-family: Georgia, serif;
+      color: var(--ln-purple);
+      opacity: .4;
+      position: absolute;
+      top: var(--af-space-4);
+      left: var(--af-space-8);
+    }
+    .ln-testimonial__text {
+      font-size: 1.15rem;
+      line-height: 1.65;
+      font-style: italic;
+      color: var(--ln-text);
+      margin-bottom: var(--af-space-6);
+      padding-top: var(--af-space-6);
+    }
+    .ln-testimonial__author {
+      display: flex; align-items: center; gap: var(--af-space-4);
+    }
+    .ln-testimonial__avatar {
+      width: 48px; height: 48px;
+      background: var(--ln-grad);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 18px; flex-shrink: 0;
+    }
+    .ln-testimonial__name { font-size: 14px; font-weight: 700; }
+    .ln-testimonial__role { font-size: 12px; color: var(--ln-muted); }
+
+    /* ==============================
+       CTA
+       ============================== */
+    .ln-cta {
+      background: var(--ln-grad);
+      border-radius: 24px;
+      padding: var(--af-space-16) var(--af-space-12);
+      text-align: center;
+      position: relative; overflow: hidden;
+      max-width: 1100px;
+      margin: 0 auto var(--af-space-12);
+    }
+    .ln-cta::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,255,255,.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .ln-cta__eyebrow {
+      font-size: 12px; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; color: rgba(255,255,255,.7);
+      margin-bottom: 16px;
+    }
+    .ln-cta__title {
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      position: relative; z-index: 1;
+    }
+    .ln-cta__sub {
+      font-size: 1rem;
+      color: rgba(255,255,255,.75);
+      max-width: 480px;
+      margin: 0 auto 40px;
+      line-height: 1.65;
+      position: relative; z-index: 1;
+    }
+    .ln-cta__actions {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      position: relative; z-index: 1;
+    }
+    .ln-btn--white {
+      background: #fff;
+      color: var(--ln-purple);
+      border: none;
+    }
+    .ln-btn--white:hover { background: rgba(255,255,255,.9); }
+    .ln-btn--white-outline {
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255,255,255,.5);
+    }
+    .ln-btn--white-outline:hover { border-color: #fff; }
+
+    /* Footer */
+    .ln-footer {
+      text-align: center;
+      padding: var(--af-space-8);
+      color: var(--ln-muted);
+      font-size: 13px;
+    }
+    .ln-footer a { color: var(--ln-purple); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .ln-nav__links { display: none; }
+      .ln-exec__grid, .ln-insight__grid { grid-template-columns: 1fr; }
+      .ln-problem__cards, .ln-stats-row { grid-template-columns: 1fr; }
+      .ln-arch, .ln-features { grid-template-columns: 1fr; }
+      .ln-metrics { grid-template-columns: repeat(2, 1fr); }
+      .ln-cta { padding: var(--af-space-12) var(--af-space-8); border-radius: 16px; }
+    }
+    @media (max-width: 540px) {
+      .ln-section { padding: var(--af-space-16) var(--af-space-4); }
+      .ln-metrics { grid-template-columns: 1fr 1fr; }
+      .ln-hero__social-proof .ln-sp-divider { display: none; }
+    }
+
+    /* Animation utility */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .ln-hero__badge,
+    .ln-hero__title,
+    .ln-hero__sub,
+    .ln-hero__cta,
+    .ln-hero__social-proof {
+      animation: fadeUp .6s ease both;
+    }
+    .ln-hero__title   { animation-delay: .1s; }
+    .ln-hero__sub     { animation-delay: .2s; }
+    .ln-hero__cta     { animation-delay: .3s; }
+    .ln-hero__social-proof { animation-delay: .4s; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a class="back-link no-print" href="../index.html">← Catalog</a>
+
+  <!-- Navbar -->
+  <nav class="ln-nav" role="navigation" aria-label="Site navigation">
+    <div class="ln-nav__logo">
+      <span class="ln-nav__logo-icon" aria-hidden="true">AF</span>
+      AtlasFlow
+    </div>
+    <ul class="ln-nav__links" role="list">
+      <li><a href="#exec">Overview</a></li>
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#solution">Solution</a></li>
+      <li><a href="#proof">Proof</a></li>
+    </ul>
+    <div class="ln-nav__cta">
+      <a href="#proof" class="ln-btn ln-btn--ghost">See results</a>
+      <a href="#cta" class="ln-btn ln-btn--primary">Get started</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- ==================== HERO ==================== -->
+    <section class="ln-hero" aria-labelledby="hero-heading">
+      <div class="ln-hero__badge" aria-label="Product status">
+        <span class="ln-hero__badge-dot" aria-hidden="true"></span>
+        Now generally available · v3.2
+      </div>
+      <h1 class="ln-hero__title" id="hero-heading">
+        Ship faster.<br/>
+        See everything.<br/>
+        <span class="grad">Deliver more.</span>
+      </h1>
+      <p class="ln-hero__sub">
+        AtlasFlow unifies your projects, your people, and your progress — so distributed
+        teams stop firefighting and start delivering.
+      </p>
+      <div class="ln-hero__cta">
+        <a href="#cta" class="ln-btn ln-btn--primary ln-btn--lg">Start free trial</a>
+        <a href="#exec" class="ln-btn ln-btn--outline ln-btn--lg">Watch the demo</a>
+      </div>
+      <div class="ln-hero__social-proof" role="list" aria-label="Key figures">
+        <div class="ln-sp-item" role="listitem">
+          <div class="ln-sp-item__value">2,400+</div>
+          <div class="ln-sp-item__label">Teams active</div>
+        </div>
+        <div class="ln-sp-divider" aria-hidden="true"></div>
+        <div class="ln-sp-item" role="listitem">
+          <div class="ln-sp-item__value">3×</div>
+          <div class="ln-sp-item__label">Faster delivery</div>
+        </div>
+        <div class="ln-sp-divider" aria-hidden="true"></div>
+        <div class="ln-sp-item" role="listitem">
+          <div class="ln-sp-item__value">99.9%</div>
+          <div class="ln-sp-item__label">Uptime SLA</div>
+        </div>
+        <div class="ln-sp-divider" aria-hidden="true"></div>
+        <div class="ln-sp-item" role="listitem">
+          <div class="ln-sp-item__value">$18.4M</div>
+          <div class="ln-sp-item__label">ARR and growing</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== EXEC SUMMARY ==================== -->
+    <section id="exec" class="ln-section" aria-labelledby="exec-heading">
+      <p class="ln-section-eyebrow">Executive overview</p>
+      <h2 class="ln-section-title" id="exec-heading">Built for the era of distributed work</h2>
+      <div class="ln-exec__grid">
+        <div>
+          <p class="ln-exec__lead">
+            Distributed teams are losing 11 hours per employee per week to tool fragmentation
+            and invisible project status. AtlasFlow closes the gap with one intelligent workspace.
+          </p>
+          <p class="ln-exec__body">
+            The modern enterprise runs on distributed talent — but its toolstack hasn't kept up.
+            Project managers toggle between five or more platforms daily, context is lost in chat
+            threads, and leadership lacks the real-time visibility to course-correct before deadlines slip.
+          </p>
+          <p class="ln-exec__body" style="margin-top:16px;">
+            AtlasFlow replaces the patchwork of standalone tools with a single source of truth:
+            live project dashboards, structured async workflows, and AI-assisted risk flagging —
+            all connected to the systems your teams already use.
+          </p>
+        </div>
+        <div class="ln-exec__highlight" role="note">
+          <p class="ln-exec__highlight-quote">
+            "AtlasFlow reduced our average project delivery time by 3× while cutting weekly
+            status meetings from five to one. It's the operating system we always needed."
+          </p>
+          <p class="ln-exec__highlight-attr">— Miriam Ochsner, VP Engineering, Steelman Labs</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROBLEM ==================== -->
+    <section id="problem" class="ln-section" aria-labelledby="problem-heading">
+      <p class="ln-section-eyebrow">The problem</p>
+      <h2 class="ln-section-title" id="problem-heading">Fragmented tools. Invisible progress.</h2>
+      <p class="ln-section-sub">Three systemic failures that cost enterprises millions in lost productivity every year.</p>
+      <div class="ln-problem__cards" role="list">
+        <div class="ln-card" role="listitem">
+          <div class="ln-problem__icon" aria-hidden="true">🧩</div>
+          <h3 class="ln-problem__title">Fragmented toolstacks</h3>
+          <p class="ln-problem__body">The average enterprise team uses 8.4 separate project tools. Every handoff between them loses context and creates duplicate work.</p>
+        </div>
+        <div class="ln-card" role="listitem">
+          <div class="ln-problem__icon" aria-hidden="true">🚨</div>
+          <h3 class="ln-problem__title">Invisible blockers</h3>
+          <p class="ln-problem__body">63% of project managers report learning about blockers only after deadlines have already slipped — because status lives in siloed spreadsheets.</p>
+        </div>
+        <div class="ln-card" role="listitem">
+          <div class="ln-problem__icon" aria-hidden="true">💬</div>
+          <h3 class="ln-problem__title">Communication debt</h3>
+          <p class="ln-problem__body">Remote teams accumulate decisions buried in chat threads, undocumented rationale, and tribal knowledge that walks out the door with employee churn.</p>
+        </div>
+      </div>
+      <div class="ln-stats-row" role="list" aria-label="Problem statistics">
+        <div class="ln-stat-card" role="listitem">
+          <div class="ln-stat-card__value">11h</div>
+          <div class="ln-stat-card__label">Lost per employee per week</div>
+        </div>
+        <div class="ln-stat-card" role="listitem">
+          <div class="ln-stat-card__value">63%</div>
+          <div class="ln-stat-card__label">PMs learn of blockers too late</div>
+        </div>
+        <div class="ln-stat-card" role="listitem">
+          <div class="ln-stat-card__value">8.4</div>
+          <div class="ln-stat-card__label">Average tools per team</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== INSIGHT ==================== -->
+    <section class="ln-section" aria-labelledby="insight-heading">
+      <p class="ln-section-eyebrow">Market insight</p>
+      <h2 class="ln-section-title" id="insight-heading">The consolidation era is here</h2>
+      <div class="ln-insight__grid">
+        <div>
+          <p class="ln-insight__pull">
+            "The next decade of enterprise productivity will be won by collapsing tool sprawl
+            into a single intelligent layer."
+          </p>
+          <p class="ln-insight__body">
+            Gartner projects the work management platform market will grow at 19% CAGR through 2028,
+            driven by enterprises consolidating around platforms with visibility, automation, and
+            integrations in a single subscription.
+          </p>
+          <p class="ln-insight__body" style="margin-top:16px;">
+            AtlasFlow is positioned precisely at this consolidation moment — mature enough for
+            enterprise security and compliance, yet agile enough for startup velocity.
+          </p>
+        </div>
+        <div class="ln-market-table" aria-label="Market data table">
+          <div class="ln-market-table__header">Market snapshot · 2025</div>
+          <div class="ln-market-row"><span class="ln-market-row__label">TAM</span><span class="ln-market-row__value">$42B</span></div>
+          <div class="ln-market-row"><span class="ln-market-row__label">CAGR (2024–2028)</span><span class="ln-market-row__value">19%</span></div>
+          <div class="ln-market-row"><span class="ln-market-row__label">Consolidation buyers</span><span class="ln-market-row__value">71%</span></div>
+          <div class="ln-market-row"><span class="ln-market-row__label">AtlasFlow ARR</span><span class="ln-market-row__value">$18.4M</span></div>
+          <div class="ln-market-row"><span class="ln-market-row__label">YoY growth</span><span class="ln-market-row__value">+214%</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SOLUTION ==================== -->
+    <section id="solution" class="ln-section" aria-labelledby="solution-heading">
+      <p class="ln-section-eyebrow">Solution &amp; architecture</p>
+      <h2 class="ln-section-title" id="solution-heading">Four layers. One workspace.</h2>
+      <p class="ln-section-sub">AtlasFlow's modular architecture integrates with your existing stack without ripping anything out.</p>
+      <div class="ln-arch" role="list" aria-label="Architecture layers">
+        <div class="ln-arch__layer" role="listitem">
+          <p class="ln-arch__num">Layer 01</p>
+          <h3 class="ln-arch__title">Data ingestion</h3>
+          <p class="ln-arch__body">Native connectors to GitHub, Jira, Slack, Google Workspace, and 60+ tools. Two-way sync, no manual imports.</p>
+        </div>
+        <div class="ln-arch__layer" role="listitem">
+          <p class="ln-arch__num">Layer 02</p>
+          <h3 class="ln-arch__title">Intelligence engine</h3>
+          <p class="ln-arch__body">ML-powered risk scoring, deadline drift detection, and capacity forecasting — updated every 15 minutes.</p>
+        </div>
+        <div class="ln-arch__layer" role="listitem">
+          <p class="ln-arch__num">Layer 03</p>
+          <h3 class="ln-arch__title">Unified workspace</h3>
+          <p class="ln-arch__body">Kanban, Gantt, and list views in one interface. Async structured updates replace status meetings.</p>
+        </div>
+        <div class="ln-arch__layer" role="listitem">
+          <p class="ln-arch__num">Layer 04</p>
+          <h3 class="ln-arch__title">Executive reporting</h3>
+          <p class="ln-arch__body">Portfolio-level dashboards with RAG status, budget burn, and on-time delivery — shareable in one click.</p>
+        </div>
+      </div>
+      <div class="ln-features" role="list" aria-label="Key features">
+        <div class="ln-feature" role="listitem">
+          <div class="ln-feature__icon" aria-hidden="true">⚡</div>
+          <div>
+            <p class="ln-feature__title">Real-time signal processing</p>
+            <p class="ln-feature__body">Every commit, comment, and task update indexed within seconds — dashboards never stale.</p>
+          </div>
+        </div>
+        <div class="ln-feature" role="listitem">
+          <div class="ln-feature__icon" aria-hidden="true">🔒</div>
+          <div>
+            <p class="ln-feature__title">Enterprise-grade security</p>
+            <p class="ln-feature__body">SOC 2 Type II certified. SSO, SCIM, audit logs, and data residency on all plans.</p>
+          </div>
+        </div>
+        <div class="ln-feature" role="listitem">
+          <div class="ln-feature__icon" aria-hidden="true">🤖</div>
+          <div>
+            <p class="ln-feature__title">AI-assisted risk flagging</p>
+            <p class="ln-feature__body">AtlasFlow's risk model surfaces at-risk projects 14 days before the deadline — on average.</p>
+          </div>
+        </div>
+        <div class="ln-feature" role="listitem">
+          <div class="ln-feature__icon" aria-hidden="true">🔗</div>
+          <div>
+            <p class="ln-feature__title">60+ native integrations</p>
+            <p class="ln-feature__body">Connect tools you already use — no custom dev needed. Full API for bespoke workflows.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROOF ==================== -->
+    <section id="proof" class="ln-section" aria-labelledby="proof-heading">
+      <p class="ln-section-eyebrow">Proof &amp; metrics</p>
+      <h2 class="ln-section-title" id="proof-heading">Results that speak for themselves</h2>
+      <p class="ln-section-sub">Averaged across 2,400+ active teams — measured at 90 days post-onboarding.</p>
+      <div class="ln-metrics" role="list" aria-label="Key performance metrics">
+        <div class="ln-metric-card" role="listitem">
+          <div class="ln-metric-card__value">3×</div>
+          <div class="ln-metric-card__label">Faster delivery</div>
+        </div>
+        <div class="ln-metric-card" role="listitem">
+          <div class="ln-metric-card__value">40%</div>
+          <div class="ln-metric-card__label">Fewer status meetings</div>
+        </div>
+        <div class="ln-metric-card" role="listitem">
+          <div class="ln-metric-card__value">2,400+</div>
+          <div class="ln-metric-card__label">Active teams</div>
+        </div>
+        <div class="ln-metric-card" role="listitem">
+          <div class="ln-metric-card__value">99.9%</div>
+          <div class="ln-metric-card__label">Uptime SLA</div>
+        </div>
+      </div>
+      <div class="ln-testimonial">
+        <div class="ln-testimonial__quote-mark" aria-hidden="true">"</div>
+        <p class="ln-testimonial__text">
+          Before AtlasFlow, I was running five status calls a week just to understand where each
+          project stood. Now I check a single dashboard at 9am and I know everything. The time
+          I've reclaimed is remarkable — and my team is finally unblocked instead of waiting for
+          the next meeting to surface issues.
+        </p>
+        <div class="ln-testimonial__author">
+          <div class="ln-testimonial__avatar" aria-hidden="true">MO</div>
+          <div>
+            <p class="ln-testimonial__name">Miriam Ochsner</p>
+            <p class="ln-testimonial__role">VP Engineering · Steelman Labs · 340 engineers</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CTA ==================== -->
+    <div style="padding: 0 var(--af-space-8) var(--af-space-20);">
+      <section id="cta" class="ln-cta" aria-labelledby="cta-heading">
+        <p class="ln-cta__eyebrow">Ready to ship faster?</p>
+        <h2 class="ln-cta__title" id="cta-heading">
+          Join 2,400+ teams<br/>already delivering more.
+        </h2>
+        <p class="ln-cta__sub">
+          Free 30-day trial · No credit card required · Setup in under 10 minutes.
+          SOC 2 Type II certified.
+        </p>
+        <div class="ln-cta__actions">
+          <a href="#" class="ln-btn ln-btn--white ln-btn--lg">Start free trial</a>
+          <a href="#" class="ln-btn ln-btn--white-outline ln-btn--lg">Book a demo</a>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <footer class="ln-footer" role="contentinfo">
+    <p>© 2025 AtlasFlow, Inc. · All rights reserved</p>
+    <p style="margin-top:8px;"><a href="../index.html">← Back to template catalog</a></p>
+  </footer>
+</body>
+</html>

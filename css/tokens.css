@@ -1,0 +1,218 @@
+/* ============================================================
+   AtlasFlow Design Tokens — shared across all 5 templates
+   ============================================================ */
+
+:root {
+  /* ------ Brand colours ------ */
+  --af-brand-primary:   #2563EB;   /* Atlas Blue */
+  --af-brand-dark:      #1E40AF;
+  --af-brand-light:     #DBEAFE;
+  --af-accent:          #F59E0B;   /* Amber accent */
+  --af-accent-light:    #FEF3C7;
+
+  /* ------ Neutrals ------ */
+  --af-gray-950:  #0A0A0F;
+  --af-gray-900:  #111827;
+  --af-gray-800:  #1F2937;
+  --af-gray-700:  #374151;
+  --af-gray-600:  #4B5563;
+  --af-gray-500:  #6B7280;
+  --af-gray-400:  #9CA3AF;
+  --af-gray-300:  #D1D5DB;
+  --af-gray-200:  #E5E7EB;
+  --af-gray-100:  #F3F4F6;
+  --af-gray-50:   #F9FAFB;
+  --af-white:     #FFFFFF;
+
+  /* ------ Typography ------ */
+  --af-font-sans:   'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --af-font-serif:  'Georgia', 'Times New Roman', serif;
+  --af-font-mono:   'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  --af-text-xs:   0.75rem;
+  --af-text-sm:   0.875rem;
+  --af-text-base: 1rem;
+  --af-text-lg:   1.125rem;
+  --af-text-xl:   1.25rem;
+  --af-text-2xl:  1.5rem;
+  --af-text-3xl:  1.875rem;
+  --af-text-4xl:  2.25rem;
+  --af-text-5xl:  3rem;
+  --af-text-6xl:  3.75rem;
+
+  --af-leading-tight:   1.2;
+  --af-leading-snug:    1.375;
+  --af-leading-normal:  1.5;
+  --af-leading-relaxed: 1.65;
+
+  --af-weight-regular: 400;
+  --af-weight-medium:  500;
+  --af-weight-semibold:600;
+  --af-weight-bold:    700;
+  --af-weight-black:   900;
+
+  /* ------ Spacing ------ */
+  --af-space-1:  0.25rem;
+  --af-space-2:  0.5rem;
+  --af-space-3:  0.75rem;
+  --af-space-4:  1rem;
+  --af-space-5:  1.25rem;
+  --af-space-6:  1.5rem;
+  --af-space-8:  2rem;
+  --af-space-10: 2.5rem;
+  --af-space-12: 3rem;
+  --af-space-16: 4rem;
+  --af-space-20: 5rem;
+  --af-space-24: 6rem;
+  --af-space-32: 8rem;
+
+  /* ------ Borders & Radius ------ */
+  --af-radius-sm:   4px;
+  --af-radius-md:   8px;
+  --af-radius-lg:   12px;
+  --af-radius-xl:   20px;
+  --af-radius-full: 9999px;
+
+  --af-border-light: 1px solid var(--af-gray-200);
+  --af-border-mid:   1px solid var(--af-gray-300);
+
+  /* ------ Shadows ------ */
+  --af-shadow-sm:  0 1px 3px rgba(0,0,0,.08);
+  --af-shadow-md:  0 4px 12px rgba(0,0,0,.10);
+  --af-shadow-lg:  0 8px 32px rgba(0,0,0,.12);
+  --af-shadow-xl:  0 16px 48px rgba(0,0,0,.16);
+
+  /* ------ Transitions ------ */
+  --af-transition-fast:   150ms ease;
+  --af-transition-base:   250ms ease;
+  --af-transition-slow:   400ms ease;
+
+  /* ------ Layout ------ */
+  --af-max-content: 1200px;
+  --af-max-text:     720px;
+}
+
+/* ============================================================
+   Base reset / normalisation shared across templates
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--af-font-sans);
+  font-size: var(--af-text-base);
+  line-height: var(--af-leading-normal);
+  color: var(--af-gray-900);
+  background: var(--af-white);
+}
+
+img, video, svg { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+/* Accessibility — focus ring */
+:focus-visible {
+  outline: 3px solid var(--af-brand-primary);
+  outline-offset: 2px;
+  border-radius: var(--af-radius-sm);
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: -999px;
+  left: 0;
+  padding: var(--af-space-3) var(--af-space-6);
+  background: var(--af-brand-primary);
+  color: var(--af-white);
+  font-weight: var(--af-weight-semibold);
+  z-index: 9999;
+}
+.skip-link:focus { top: 0; }
+
+/* Screen-reader only */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ============================================================
+   Shared dummy-data CSS helpers (avatars, metric cards, etc.)
+   ============================================================ */
+
+/* Generic metric card */
+.af-metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--af-space-1);
+}
+.af-metric__value {
+  font-size: var(--af-text-4xl);
+  font-weight: var(--af-weight-black);
+  line-height: 1;
+}
+.af-metric__label {
+  font-size: var(--af-text-sm);
+  color: var(--af-gray-500);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+/* Pill badge */
+.af-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--af-space-1);
+  padding: var(--af-space-1) var(--af-space-3);
+  border-radius: var(--af-radius-full);
+  font-size: var(--af-text-xs);
+  font-weight: var(--af-weight-semibold);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* CTA button base */
+.af-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--af-space-2);
+  padding: var(--af-space-3) var(--af-space-6);
+  border-radius: var(--af-radius-md);
+  font-size: var(--af-text-base);
+  font-weight: var(--af-weight-semibold);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all var(--af-transition-base);
+  white-space: nowrap;
+}
+.af-btn--primary {
+  background: var(--af-brand-primary);
+  color: var(--af-white);
+  border-color: var(--af-brand-primary);
+}
+.af-btn--primary:hover {
+  background: var(--af-brand-dark);
+  border-color: var(--af-brand-dark);
+}
+.af-btn--outline {
+  background: transparent;
+  color: var(--af-brand-primary);
+  border-color: var(--af-brand-primary);
+}
+.af-btn--outline:hover {
+  background: var(--af-brand-light);
+}
+
+/* ============================================================
+   Print helpers
+   ============================================================ */
+@media print {
+  .no-print { display: none !important; }
+  a[href]::after { content: " (" attr(href) ")"; }
+}

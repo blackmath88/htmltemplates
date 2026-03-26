@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AtlasFlow — Scrollyteller. Scroll-driven cinematic presentation with Intersection Observer reveal animations." />
+  <title>AtlasFlow · Scrollyteller</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <style>
+    /* ============================================================
+       Template 05 — Scrollyteller
+       Scroll-driven reveals · sticky panels · cinematic
+       Pure CSS + Intersection Observer — no heavy frameworks
+       ============================================================ */
+
+    :root {
+      --sc-dark:      #060A14;
+      --sc-navy:      #0C1428;
+      --sc-blue:      #1A3A6B;
+      --sc-cyan:      #38BDF8;
+      --sc-purple:    #A855F7;
+      --sc-amber:     #F59E0B;
+      --sc-green:     #10B981;
+      --sc-text:      #E8EEF8;
+      --sc-muted:     #7B8DB0;
+      --sc-border:    rgba(56,189,248,.15);
+      --sc-grad:      linear-gradient(135deg, var(--sc-cyan) 0%, var(--sc-purple) 100%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--sc-dark);
+      color: var(--sc-text);
+      font-family: var(--af-font-sans);
+      overflow-x: hidden;
+    }
+
+    a { color: var(--sc-cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    :focus-visible { outline: 2px solid var(--sc-cyan); outline-offset: 3px; border-radius: 4px; }
+
+    /* ---- Back link ---- */
+    .back-link {
+      position: fixed; top: 20px; left: 20px; z-index: 999;
+      background: rgba(255,255,255,.08);
+      border: 1px solid var(--sc-border);
+      backdrop-filter: blur(12px);
+      color: var(--sc-muted);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px; font-weight: 600;
+      transition: all 200ms;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--sc-text); border-color: var(--sc-cyan); }
+
+    /* ==============================
+       PROGRESS BAR
+       ============================== */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      background: var(--sc-grad);
+      z-index: 1000;
+      width: 0%;
+      transition: width 100ms linear;
+    }
+
+    /* ==============================
+       STICKY NAV DOTS
+       ============================== */
+    .nav-dots {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      list-style: none;
+    }
+    .nav-dots__dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      cursor: pointer;
+      transition: all 200ms;
+      border: none;
+      display: block;
+    }
+    .nav-dots__dot.active {
+      background: var(--sc-cyan);
+      box-shadow: 0 0 8px var(--sc-cyan);
+      transform: scale(1.4);
+    }
+    .nav-dots__dot:hover { background: rgba(255,255,255,.5); }
+
+    /* ==============================
+       REVEAL ANIMATION CLASSES
+       ============================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal--left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal--left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .reveal--right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal--right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .reveal--scale {
+      opacity: 0;
+      transform: scale(.95);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal--scale.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Stagger delays */
+    .delay-1 { transition-delay: .1s; }
+    .delay-2 { transition-delay: .2s; }
+    .delay-3 { transition-delay: .3s; }
+    .delay-4 { transition-delay: .4s; }
+    .delay-5 { transition-delay: .5s; }
+
+    /* ==============================
+       PANEL BASE (full-viewport)
+       ============================== */
+    .sc-panel {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px var(--af-space-8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Glow utility */
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
+    }
+
+    /* ==============================
+       PANEL 1 · HERO
+       ============================== */
+    .panel-hero {
+      background: var(--sc-dark);
+      text-align: center;
+    }
+    .panel-hero .glow-orb-1 {
+      width: 600px; height: 600px;
+      background: rgba(56,189,248,.12);
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+    }
+    .panel-hero .glow-orb-2 {
+      width: 400px; height: 400px;
+      background: rgba(168,85,247,.1);
+      bottom: -100px; right: -100px;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(56,189,248,.1);
+      border: 1px solid rgba(56,189,248,.3);
+      padding: 6px 18px;
+      border-radius: 999px;
+      font-size: 12px; font-weight: 600;
+      color: var(--sc-cyan);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      position: relative; z-index: 1;
+    }
+    .hero-badge__dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--sc-green);
+      box-shadow: 0 0 6px var(--sc-green);
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: .95;
+      letter-spacing: -.04em;
+      margin-bottom: 32px;
+      position: relative; z-index: 1;
+    }
+    .hero-title .line-1 { color: var(--sc-text); }
+    .hero-title .line-2 { color: var(--sc-text); }
+    .hero-title .line-3 {
+      background: var(--sc-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.2rem;
+      color: var(--sc-muted);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+      position: relative; z-index: 1;
+    }
+
+    .hero-cta {
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      position: relative; z-index: 1;
+      margin-bottom: 80px;
+    }
+
+    .sc-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 15px; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      transition: all 200ms;
+      border: 1.5px solid transparent;
+    }
+    .sc-btn--primary {
+      background: var(--sc-grad);
+      color: #fff;
+    }
+    .sc-btn--primary:hover { opacity: .9; transform: translateY(-1px); }
+    .sc-btn--outline {
+      background: transparent;
+      color: var(--sc-text);
+      border-color: var(--sc-border);
+    }
+    .sc-btn--outline:hover { border-color: var(--sc-cyan); color: var(--sc-cyan); }
+
+    /* Hero scroll hint */
+    .scroll-hint {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 8px; color: var(--sc-muted); font-size: 12px;
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      animation: bounce 2s infinite;
+    }
+    .scroll-hint__arrow { font-size: 20px; }
+    @keyframes bounce {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* Key figures bar */
+    .hero-figures {
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative; z-index: 1;
+    }
+    .hero-figure__value {
+      font-size: 2rem; font-weight: 900;
+      background: var(--sc-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .hero-figure__label {
+      font-size: 11px; color: var(--sc-muted);
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+
+    /* ==============================
+       PANEL 2 · EXEC SUMMARY
+       ============================== */
+    .panel-exec {
+      background: var(--sc-navy);
+      border-top: 1px solid var(--sc-border);
+      border-bottom: 1px solid var(--sc-border);
+    }
+    .panel-exec .glow-orb-1 {
+      width: 500px; height: 500px;
+      background: rgba(56,189,248,.08);
+      top: -100px; right: -100px;
+    }
+    .exec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      max-width: 1100px;
+      width: 100%;
+      position: relative; z-index: 1;
+    }
+    .exec-eyebrow {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--sc-cyan);
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px;
+    }
+    .exec-eyebrow::before {
+      content: ''; display: block;
+      width: 32px; height: 2px; background: var(--sc-cyan);
+    }
+    .exec-title {
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 900; line-height: 1.15; letter-spacing: -.02em;
+      margin-bottom: 24px;
+    }
+    .exec-body {
+      font-size: 1rem; color: var(--sc-muted); line-height: 1.75;
+      margin-bottom: 16px;
+    }
+    .exec-card {
+      background: rgba(56,189,248,.06);
+      border: 1px solid var(--sc-border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .exec-card__quote {
+      font-size: 1.1rem; font-style: italic;
+      color: var(--sc-text); line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .exec-card__attr { font-size: 13px; color: var(--sc-muted); }
+    .exec-card__attr strong { color: var(--sc-text); }
+
+    /* ==============================
+       PANEL 3 · PROBLEM
+       ============================== */
+    .panel-problem {
+      background: var(--sc-dark);
+    }
+    .panel-problem .glow-orb-1 {
+      width: 500px; height: 500px;
+      background: rgba(245,158,11,.06);
+      bottom: -100px; left: -100px;
+    }
+    .problem-content {
+      max-width: 1100px; width: 100%;
+      position: relative; z-index: 1;
+    }
+    .problem-intro {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .sc-eyebrow {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--sc-cyan);
+      margin-bottom: 12px;
+    }
+    .sc-title {
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      font-weight: 900; letter-spacing: -.02em; line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .sc-sub {
+      font-size: 1rem; color: var(--sc-muted); line-height: 1.7;
+      max-width: 560px; margin: 0 auto;
+    }
+    .problem-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    .problem-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--sc-border);
+      border-radius: 14px;
+      padding: 28px;
+      transition: border-color 200ms, transform 200ms;
+    }
+    .problem-card:hover {
+      border-color: rgba(56,189,248,.4);
+      transform: translateY(-4px);
+    }
+    .problem-card__num {
+      font-size: 3rem; font-weight: 900;
+      color: rgba(56,189,248,.15); line-height: 1;
+      margin-bottom: 16px;
+    }
+    .problem-card__title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .problem-card__body { font-size: 14px; color: var(--sc-muted); line-height: 1.65; }
+
+    .problem-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .problem-stat {
+      text-align: center;
+      padding: 28px;
+      background: rgba(245,158,11,.06);
+      border: 1px solid rgba(245,158,11,.2);
+      border-radius: 14px;
+    }
+    .problem-stat__value {
+      font-size: 2.75rem; font-weight: 900;
+      color: var(--sc-amber); line-height: 1; margin-bottom: 8px;
+    }
+    .problem-stat__label {
+      font-size: 12px; color: var(--sc-muted);
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+
+    /* ==============================
+       PANEL 4 · INSIGHT (sticky)
+       ============================== */
+    .panel-insight {
+      background: var(--sc-navy);
+      border-top: 1px solid var(--sc-border);
+    }
+    .insight-content {
+      max-width: 1100px; width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .insight-pull {
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 700; line-height: 1.3;
+      background: var(--sc-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+    }
+    .insight-body { font-size: 1rem; color: var(--sc-muted); line-height: 1.75; margin-bottom: 16px; }
+    .insight-table {
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--sc-border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .insight-table__header {
+      background: rgba(56,189,248,.08);
+      padding: 12px 20px;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: var(--sc-muted);
+    }
+    .insight-row {
+      display: flex; justify-content: space-between;
+      padding: 14px 20px;
+      border-top: 1px solid var(--sc-border);
+    }
+    .insight-row__label { font-size: 14px; color: var(--sc-muted); }
+    .insight-row__value { font-size: 14px; font-weight: 700; color: var(--sc-text); }
+
+    /* ==============================
+       PANEL 5 · SOLUTION / ARCH
+       ============================== */
+    .panel-solution {
+      background: var(--sc-dark);
+      padding-top: 120px; padding-bottom: 120px;
+    }
+    .solution-content { max-width: 1100px; width: 100%; position: relative; z-index: 1; }
+    .arch-pipeline {
+      display: flex;
+      gap: 0;
+      margin: 48px 0;
+      border: 1px solid var(--sc-border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .arch-step {
+      flex: 1;
+      padding: 28px 20px;
+      position: relative;
+      border-right: 1px solid var(--sc-border);
+      background: rgba(255,255,255,.02);
+      transition: background 200ms;
+    }
+    .arch-step:last-child { border-right: none; }
+    .arch-step:hover { background: rgba(56,189,248,.05); }
+    .arch-step__top-bar {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--sc-grad);
+    }
+    .arch-step__num {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--sc-cyan); margin-bottom: 12px;
+    }
+    .arch-step__title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .arch-step__body { font-size: 13px; color: var(--sc-muted); line-height: 1.6; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .feature-item {
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--sc-border);
+      border-radius: 12px; padding: 24px;
+      display: flex; gap: 16px; align-items: flex-start;
+      transition: border-color 200ms;
+    }
+    .feature-item:hover { border-color: rgba(56,189,248,.4); }
+    .feature-icon {
+      width: 40px; height: 40px;
+      background: rgba(56,189,248,.1);
+      border: 1px solid rgba(56,189,248,.2);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .feature-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .feature-body { font-size: 13px; color: var(--sc-muted); line-height: 1.6; }
+
+    /* ==============================
+       PANEL 6 · PROOF
+       ============================== */
+    .panel-proof {
+      background: var(--sc-navy);
+      border-top: 1px solid var(--sc-border);
+    }
+    .proof-content { max-width: 1100px; width: 100%; position: relative; z-index: 1; }
+    .proof-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px; margin: 48px 0;
+    }
+    .proof-metric {
+      text-align: center;
+      padding: 32px 20px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--sc-border);
+      border-radius: 14px;
+      position: relative; overflow: hidden;
+      transition: transform 200ms;
+    }
+    .proof-metric:hover { transform: translateY(-4px); }
+    .proof-metric::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px; background: var(--sc-grad);
+    }
+    .proof-metric__value {
+      font-size: 3rem; font-weight: 900; line-height: 1;
+      background: var(--sc-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .proof-metric__label {
+      font-size: 12px; color: var(--sc-muted);
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .proof-testimonial {
+      background: rgba(56,189,248,.05);
+      border: 1px solid var(--sc-border);
+      border-radius: 16px;
+      padding: 40px;
+      position: relative;
+    }
+    .proof-testimonial__mark {
+      font-size: 6rem; line-height: 1;
+      font-family: Georgia, serif;
+      color: var(--sc-cyan); opacity: .2;
+      position: absolute; top: 16px; left: 32px;
+    }
+    .proof-testimonial__text {
+      font-size: 1.15rem; font-style: italic;
+      color: var(--sc-text); line-height: 1.65;
+      margin-bottom: 24px; padding-top: 32px;
+    }
+    .proof-testimonial__author {
+      display: flex; align-items: center; gap: 16px;
+    }
+    .proof-testimonial__avatar {
+      width: 48px; height: 48px;
+      background: var(--sc-grad);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 18px; flex-shrink: 0;
+    }
+    .proof-testimonial__name { font-size: 14px; font-weight: 700; }
+    .proof-testimonial__role { font-size: 12px; color: var(--sc-muted); }
+
+    /* ==============================
+       PANEL 7 · CTA
+       ============================== */
+    .panel-cta {
+      background: var(--sc-dark);
+      text-align: center;
+      position: relative;
+    }
+    .panel-cta .glow-orb-1 {
+      width: 700px; height: 700px;
+      background: rgba(56,189,248,.08);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+    }
+    .panel-cta .glow-orb-2 {
+      width: 400px; height: 400px;
+      background: rgba(168,85,247,.08);
+      top: 20%; right: 10%;
+    }
+    .cta-content { position: relative; z-index: 1; max-width: 680px; }
+    .cta-eyebrow {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--sc-cyan); margin-bottom: 16px;
+    }
+    .cta-title {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900; line-height: 1.05;
+      letter-spacing: -.03em; margin-bottom: 24px;
+    }
+    .cta-title .grad {
+      background: var(--sc-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .cta-sub {
+      font-size: 1.05rem; color: var(--sc-muted);
+      line-height: 1.7; margin-bottom: 40px;
+    }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .cta-fine {
+      margin-top: 24px;
+      font-size: 12px; color: var(--sc-muted);
+      display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;
+    }
+    .cta-fine span::before {
+      content: '✓ ';
+      color: var(--sc-green);
+    }
+
+    /* Footer */
+    .sc-footer {
+      background: var(--sc-dark);
+      border-top: 1px solid var(--sc-border);
+      padding: 32px;
+      text-align: center;
+      color: var(--sc-muted); font-size: 13px;
+    }
+    .sc-footer a { color: var(--sc-cyan); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .exec-grid, .insight-content { grid-template-columns: 1fr; gap: 32px; }
+      .problem-cards, .problem-stats { grid-template-columns: 1fr; }
+      .arch-pipeline { flex-direction: column; }
+      .arch-step { border-right: none; border-bottom: 1px solid var(--sc-border); }
+      .features-grid { grid-template-columns: 1fr; }
+      .proof-metrics { grid-template-columns: repeat(2,1fr); }
+      .nav-dots { display: none; }
+    }
+    @media (max-width: 540px) {
+      .hero-title { font-size: 2.5rem; }
+      .sc-panel { padding: 80px var(--af-space-4); }
+      .proof-metrics { grid-template-columns: 1fr 1fr; }
+      .hero-figures { gap: 24px; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .reveal--left, .reveal--right, .reveal--scale {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+      .scroll-hint { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a class="back-link no-print" href="../index.html">← Catalog</a>
+
+  <!-- Scroll progress bar -->
+  <div class="scroll-progress" id="scrollProgress" role="progressbar" aria-label="Page scroll progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+
+  <!-- Navigation dots -->
+  <nav class="nav-dots no-print" aria-label="Quick navigation">
+    <button class="nav-dots__dot active" onclick="scrollToPanel(0)" aria-label="Go to Hero section"></button>
+    <button class="nav-dots__dot" onclick="scrollToPanel(1)" aria-label="Go to Executive Summary section"></button>
+    <button class="nav-dots__dot" onclick="scrollToPanel(2)" aria-label="Go to Problem section"></button>
+    <button class="nav-dots__dot" onclick="scrollToPanel(3)" aria-label="Go to Insight section"></button>
+    <button class="nav-dots__dot" onclick="scrollToPanel(4)" aria-label="Go to Solution section"></button>
+    <button class="nav-dots__dot" onclick="scrollToPanel(5)" aria-label="Go to Proof section"></button>
+    <button class="nav-dots__dot" onclick="scrollToPanel(6)" aria-label="Go to Get Started section"></button>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- ==================== PANEL 1 · HERO ==================== -->
+    <section id="panel-0" class="sc-panel panel-hero" data-panel="0" aria-labelledby="hero-heading">
+      <div class="glow-orb glow-orb-1" aria-hidden="true"></div>
+      <div class="glow-orb glow-orb-2" aria-hidden="true"></div>
+
+      <div class="reveal" role="img" aria-label="AtlasFlow announcement badge">
+        <div class="hero-badge">
+          <span class="hero-badge__dot" aria-hidden="true"></span>
+          Now generally available · v3.2
+        </div>
+      </div>
+
+      <div class="hero-title reveal delay-1">
+        <div class="line-1">One workspace.</div>
+        <div class="line-2">Every team.</div>
+        <div class="line-3" id="hero-heading">Zero chaos.</div>
+      </div>
+
+      <p class="hero-sub reveal delay-2">
+        AtlasFlow unifies your projects, your people, and your progress — so distributed
+        teams stop firefighting and start delivering.
+      </p>
+
+      <div class="hero-cta reveal delay-3">
+        <a href="#panel-6" class="sc-btn sc-btn--primary">Start free trial</a>
+        <a href="#panel-1" class="sc-btn sc-btn--outline">See how it works ↓</a>
+      </div>
+
+      <div class="hero-figures reveal delay-4" role="list" aria-label="Key statistics">
+        <div class="hero-figure" role="listitem">
+          <div class="hero-figure__value">2,400+</div>
+          <div class="hero-figure__label">Teams active</div>
+        </div>
+        <div class="hero-figure" role="listitem">
+          <div class="hero-figure__value">3×</div>
+          <div class="hero-figure__label">Faster delivery</div>
+        </div>
+        <div class="hero-figure" role="listitem">
+          <div class="hero-figure__value">99.9%</div>
+          <div class="hero-figure__label">Uptime SLA</div>
+        </div>
+        <div class="hero-figure" role="listitem">
+          <div class="hero-figure__value">$18.4M</div>
+          <div class="hero-figure__label">ARR & growing</div>
+        </div>
+      </div>
+
+      <div class="scroll-hint" aria-hidden="true">
+        <span>Scroll</span>
+        <span class="scroll-hint__arrow">↓</span>
+      </div>
+    </section>
+
+    <!-- ==================== PANEL 2 · EXEC SUMMARY ==================== -->
+    <section id="panel-1" class="sc-panel panel-exec" data-panel="1" aria-labelledby="exec-heading">
+      <div class="glow-orb glow-orb-1" aria-hidden="true"></div>
+      <div class="exec-grid">
+        <div class="reveal--left">
+          <p class="exec-eyebrow">Executive overview</p>
+          <h2 class="exec-title" id="exec-heading">Built for the era of distributed work</h2>
+          <p class="exec-body">
+            Distributed teams are losing 11 hours per employee per week to tool fragmentation and
+            invisible project status. AtlasFlow closes the gap with one intelligent workspace
+            — real-time visibility, structured async collaboration, AI-assisted risk management.
+          </p>
+          <p class="exec-body">
+            The platform is mature enough for enterprise security (SOC 2 Type II, SSO, SCIM) yet
+            agile enough for startup delivery velocity. It integrates with 60+ tools your teams
+            already use — no rip-and-replace required.
+          </p>
+        </div>
+        <div class="reveal--right delay-2">
+          <div class="exec-card" role="note">
+            <p class="exec-card__quote">
+              "AtlasFlow reduced our average project delivery time by 3× while cutting weekly
+              status meetings from five to one. It's the operating system we always needed."
+            </p>
+            <p class="exec-card__attr"><strong>Miriam Ochsner</strong><br/>VP Engineering · Steelman Labs</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PANEL 3 · PROBLEM ==================== -->
+    <section id="panel-2" class="sc-panel panel-problem" data-panel="2" aria-labelledby="problem-heading">
+      <div class="glow-orb glow-orb-1" aria-hidden="true"></div>
+      <div class="problem-content">
+        <div class="problem-intro reveal">
+          <p class="sc-eyebrow">The problem</p>
+          <h2 class="sc-title" id="problem-heading">Fragmented tools. Invisible progress.</h2>
+          <p class="sc-sub">Three systemic failures costing enterprises millions in lost productivity every year.</p>
+        </div>
+        <div class="problem-cards" role="list">
+          <div class="problem-card reveal delay-1" role="listitem">
+            <div class="problem-card__num" aria-hidden="true">01</div>
+            <h3 class="problem-card__title">Fragmented toolstacks</h3>
+            <p class="problem-card__body">The average enterprise team uses 8.4 separate project tools. Every handoff loses context, creates duplicate work, and slows decisions.</p>
+          </div>
+          <div class="problem-card reveal delay-2" role="listitem">
+            <div class="problem-card__num" aria-hidden="true">02</div>
+            <h3 class="problem-card__title">Invisible blockers</h3>
+            <p class="problem-card__body">63% of project managers learn about blockers only after deadlines have already slipped — because status lives in siloed spreadsheets.</p>
+          </div>
+          <div class="problem-card reveal delay-3" role="listitem">
+            <div class="problem-card__num" aria-hidden="true">03</div>
+            <h3 class="problem-card__title">Communication debt</h3>
+            <p class="problem-card__body">Remote teams accumulate decisions buried in chat threads, undocumented rationale, and tribal knowledge that walks out the door with churn.</p>
+          </div>
+        </div>
+        <div class="problem-stats" role="list" aria-label="Problem statistics">
+          <div class="problem-stat reveal delay-1" role="listitem">
+            <div class="problem-stat__value">11h</div>
+            <div class="problem-stat__label">Lost per employee / week</div>
+          </div>
+          <div class="problem-stat reveal delay-2" role="listitem">
+            <div class="problem-stat__value">63%</div>
+            <div class="problem-stat__label">PMs miss blockers</div>
+          </div>
+          <div class="problem-stat reveal delay-3" role="listitem">
+            <div class="problem-stat__value">8.4</div>
+            <div class="problem-stat__label">Avg. tools per team</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PANEL 4 · INSIGHT ==================== -->
+    <section id="panel-3" class="sc-panel panel-insight" data-panel="3" aria-labelledby="insight-heading">
+      <div class="insight-content">
+        <div class="reveal--left">
+          <p class="sc-eyebrow">Market insight</p>
+          <h2 class="sc-title" id="insight-heading">The consolidation era is here</h2>
+          <p class="insight-pull">
+            "The next decade of enterprise productivity will be won by collapsing tool sprawl
+            into a single intelligent layer."
+          </p>
+          <p class="insight-body">
+            Gartner projects the work management platform market will reach $42B by 2028 at a 19%
+            CAGR — driven by enterprises consolidating toolstacks. 71% of buyers are actively
+            seeking fewer vendors, willing to pay a 28% premium for a platform that replaces three
+            or more point solutions.
+          </p>
+          <p class="insight-body">
+            AtlasFlow is positioned precisely at this consolidation moment: $18.4M ARR, +214%
+            YoY growth, 134% Net Revenue Retention.
+          </p>
+        </div>
+        <div class="insight-table reveal--right delay-2" aria-label="Market data table">
+          <div class="insight-table__header">Market snapshot · 2025</div>
+          <div class="insight-row"><span class="insight-row__label">TAM</span><span class="insight-row__value">$42B</span></div>
+          <div class="insight-row"><span class="insight-row__label">CAGR (2024–2028)</span><span class="insight-row__value">19%</span></div>
+          <div class="insight-row"><span class="insight-row__label">Consolidation buyers</span><span class="insight-row__value">71%</span></div>
+          <div class="insight-row"><span class="insight-row__label">AtlasFlow ARR</span><span class="insight-row__value">$18.4M</span></div>
+          <div class="insight-row"><span class="insight-row__label">YoY growth</span><span class="insight-row__value">+214%</span></div>
+          <div class="insight-row"><span class="insight-row__label">Net Revenue Retention</span><span class="insight-row__value">134%</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PANEL 5 · SOLUTION ==================== -->
+    <section id="panel-4" class="sc-panel panel-solution" data-panel="4" aria-labelledby="solution-heading">
+      <div class="solution-content">
+        <div class="reveal" style="text-align:center; margin-bottom:0;">
+          <p class="sc-eyebrow">Solution &amp; architecture</p>
+          <h2 class="sc-title" id="solution-heading">Four layers. One workspace.</h2>
+          <p class="sc-sub">Modular architecture that integrates with your existing stack — no rip-and-replace.</p>
+        </div>
+        <div class="arch-pipeline reveal delay-1" role="list" aria-label="Architecture pipeline">
+          <div class="arch-step" role="listitem">
+            <div class="arch-step__top-bar" aria-hidden="true"></div>
+            <p class="arch-step__num">Layer 01</p>
+            <h3 class="arch-step__title">Data ingestion</h3>
+            <p class="arch-step__body">Native connectors to 60+ tools. Two-way sync, no manual imports.</p>
+          </div>
+          <div class="arch-step" role="listitem">
+            <div class="arch-step__top-bar" aria-hidden="true"></div>
+            <p class="arch-step__num">Layer 02</p>
+            <h3 class="arch-step__title">Intelligence engine</h3>
+            <p class="arch-step__body">ML risk scoring, drift detection, capacity forecasting — every 15 minutes.</p>
+          </div>
+          <div class="arch-step" role="listitem">
+            <div class="arch-step__top-bar" aria-hidden="true"></div>
+            <p class="arch-step__num">Layer 03</p>
+            <h3 class="arch-step__title">Unified workspace</h3>
+            <p class="arch-step__body">Kanban, Gantt, list. Structured async updates replace status meetings.</p>
+          </div>
+          <div class="arch-step" role="listitem">
+            <div class="arch-step__top-bar" aria-hidden="true"></div>
+            <p class="arch-step__num">Layer 04</p>
+            <h3 class="arch-step__title">Executive reporting</h3>
+            <p class="arch-step__body">Portfolio RAG dashboards. Budget, velocity, on-time rate — one click share.</p>
+          </div>
+        </div>
+        <div class="features-grid reveal delay-2" role="list" aria-label="Key features">
+          <div class="feature-item" role="listitem">
+            <div class="feature-icon" aria-hidden="true">⚡</div>
+            <div>
+              <p class="feature-title">Real-time signal processing</p>
+              <p class="feature-body">Every commit, comment, and task update indexed in seconds — dashboards never stale.</p>
+            </div>
+          </div>
+          <div class="feature-item" role="listitem">
+            <div class="feature-icon" aria-hidden="true">🔒</div>
+            <div>
+              <p class="feature-title">Enterprise-grade security</p>
+              <p class="feature-body">SOC 2 Type II. SSO, SCIM, audit logs, data residency on all plans.</p>
+            </div>
+          </div>
+          <div class="feature-item" role="listitem">
+            <div class="feature-icon" aria-hidden="true">🤖</div>
+            <div>
+              <p class="feature-title">AI-assisted risk flagging</p>
+              <p class="feature-body">Surfaces at-risk projects 14 days before the deadline — on average.</p>
+            </div>
+          </div>
+          <div class="feature-item" role="listitem">
+            <div class="feature-icon" aria-hidden="true">🔗</div>
+            <div>
+              <p class="feature-title">60+ native integrations</p>
+              <p class="feature-body">Connect tools you already use — no custom dev. Full API for bespoke workflows.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PANEL 6 · PROOF ==================== -->
+    <section id="panel-5" class="sc-panel panel-proof" data-panel="5" aria-labelledby="proof-heading">
+      <div class="proof-content">
+        <div class="reveal" style="text-align:center; margin-bottom:0;">
+          <p class="sc-eyebrow">Proof &amp; metrics</p>
+          <h2 class="sc-title" id="proof-heading">Results across 2,400+ teams</h2>
+          <p class="sc-sub">Averaged at 90 days post-onboarding. These are median numbers — not the top decile.</p>
+        </div>
+        <div class="proof-metrics" role="list" aria-label="Performance metrics">
+          <div class="proof-metric reveal delay-1" role="listitem">
+            <div class="proof-metric__value">3×</div>
+            <div class="proof-metric__label">Faster project delivery</div>
+          </div>
+          <div class="proof-metric reveal delay-2" role="listitem">
+            <div class="proof-metric__value">40%</div>
+            <div class="proof-metric__label">Fewer status meetings</div>
+          </div>
+          <div class="proof-metric reveal delay-3" role="listitem">
+            <div class="proof-metric__value">2,400+</div>
+            <div class="proof-metric__label">Active teams</div>
+          </div>
+          <div class="proof-metric reveal delay-4" role="listitem">
+            <div class="proof-metric__value">99.9%</div>
+            <div class="proof-metric__label">Uptime SLA</div>
+          </div>
+        </div>
+        <div class="proof-testimonial reveal delay-2">
+          <div class="proof-testimonial__mark" aria-hidden="true">"</div>
+          <p class="proof-testimonial__text">
+            Before AtlasFlow, I was running five status calls a week just to understand where each
+            project stood. Now I check a single dashboard at 9am and I know everything. The time
+            I've reclaimed is remarkable — and my team is finally unblocked instead of waiting for
+            the next meeting to surface issues.
+          </p>
+          <div class="proof-testimonial__author">
+            <div class="proof-testimonial__avatar" aria-hidden="true">MO</div>
+            <div>
+              <p class="proof-testimonial__name">Miriam Ochsner</p>
+              <p class="proof-testimonial__role">VP Engineering · Steelman Labs · 340 engineers</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PANEL 7 · CTA ==================== -->
+    <section id="panel-6" class="sc-panel panel-cta" data-panel="6" aria-labelledby="cta-heading">
+      <div class="glow-orb glow-orb-1" aria-hidden="true"></div>
+      <div class="glow-orb glow-orb-2" aria-hidden="true"></div>
+      <div class="cta-content reveal">
+        <p class="cta-eyebrow">Ready to ship faster?</p>
+        <h2 class="cta-title" id="cta-heading">
+          Join 2,400+ teams<br/>
+          <span class="grad">already delivering.</span>
+        </h2>
+        <p class="cta-sub">
+          Free 30-day trial. No credit card required. Setup in under 10 minutes.
+          SOC 2 Type II certified. 99.9% uptime SLA.
+        </p>
+        <div class="cta-btns">
+          <a href="#" class="sc-btn sc-btn--primary" style="font-size:16px; padding:16px 40px;">Start free trial</a>
+          <a href="#" class="sc-btn sc-btn--outline" style="font-size:16px; padding:16px 40px;">Book a demo</a>
+        </div>
+        <div class="cta-fine" aria-label="Plan details">
+          <span>No credit card needed</span>
+          <span>SOC 2 Type II</span>
+          <span>Cancel anytime</span>
+          <span>99.9% uptime</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="sc-footer" role="contentinfo">
+    <p>© 2025 AtlasFlow, Inc. · All rights reserved</p>
+    <p style="margin-top:8px;"><a href="../index.html">← Back to template catalog</a></p>
+  </footer>
+
+  <script>
+    // ============================================================
+    // Scroll progress bar
+    // ============================================================
+    const progressBar = document.getElementById('scrollProgress');
+    function updateProgress() {
+      const scrolled = window.scrollY;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = total > 0 ? Math.round((scrolled / total) * 100) : 0;
+      progressBar.style.width = pct + '%';
+      progressBar.setAttribute('aria-valuenow', pct);
+    }
+
+    // ============================================================
+    // Intersection Observer — reveal animations & nav dots
+    // ============================================================
+    const revealEls = document.querySelectorAll('.reveal, .reveal--left, .reveal--right, .reveal--scale');
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => revealObserver.observe(el));
+
+    // Nav dots active state
+    const panels = document.querySelectorAll('.sc-panel[data-panel]');
+    const dots = document.querySelectorAll('.nav-dots__dot');
+    const panelObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = parseInt(entry.target.dataset.panel);
+          dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        }
+      });
+    }, { threshold: 0.5 });
+    panels.forEach(p => panelObserver.observe(p));
+
+    // ============================================================
+    // Scroll to panel
+    // ============================================================
+    function scrollToPanel(idx) {
+      const panel = document.querySelector(`.sc-panel[data-panel="${idx}"]`);
+      if (panel) panel.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ============================================================
+    // Event listeners
+    // ============================================================
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    // Make all reveals visible immediately if reduced motion is preferred
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      revealEls.forEach(el => el.classList.add('visible'));
+    }
+  </script>
+</body>
+</html>
