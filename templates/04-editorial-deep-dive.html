@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AtlasFlow — Editorial Deep-Dive. Long-form editorial presentation with Georgia serif, pull quotes, and warm amber palette." />
+  <title>AtlasFlow · Editorial Deep-Dive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <style>
+    /* ============================================================
+       Template 04 — Editorial Deep-Dive
+       Long-form · Georgia serif · pull quotes · warm amber
+       ============================================================ */
+
+    :root {
+      --ed-cream:    #FAF7F2;
+      --ed-paper:    #FFF9F0;
+      --ed-rule:     #E8DECE;
+      --ed-ink:      #1A1208;
+      --ed-muted:    #7A6E60;
+      --ed-amber:    #B45309;
+      --ed-amber-lt: #FEF3C7;
+      --ed-amber-md: #FDE68A;
+      --ed-red:      #991B1B;
+      --ed-green:    #065F46;
+      --ed-column:   680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ed-cream);
+      color: var(--ed-ink);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    a { color: var(--ed-amber); }
+    a:hover { text-decoration: underline; }
+    :focus-visible { outline: 2px solid var(--ed-amber); outline-offset: 3px; }
+
+    /* ---- Back link ---- */
+    .back-link {
+      position: fixed; top: 16px; right: 16px; z-index: 300;
+      background: var(--ed-ink);
+      color: var(--ed-cream);
+      padding: 6px 14px;
+      font-family: var(--af-font-sans);
+      font-size: 12px; font-weight: 600;
+      letter-spacing: .05em;
+      text-decoration: none;
+      transition: background 150ms;
+    }
+    .back-link:hover { background: var(--ed-amber); }
+
+    /* ==============================
+       MASTHEAD
+       ============================== */
+    .ed-masthead {
+      background: var(--ed-ink);
+      color: var(--ed-cream);
+      text-align: center;
+      padding: var(--af-space-6) var(--af-space-8);
+      border-bottom: 4px solid var(--ed-amber);
+    }
+    .ed-masthead__kicker {
+      font-family: var(--af-font-sans);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ed-amber);
+      margin-bottom: 6px;
+    }
+    .ed-masthead__name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -.02em;
+    }
+    .ed-masthead__tagline {
+      font-family: var(--af-font-sans);
+      font-size: 12px;
+      color: rgba(255,255,255,.5);
+      margin-top: 6px;
+      letter-spacing: .06em;
+    }
+
+    /* ==============================
+       TOP NAV BAR
+       ============================== */
+    .ed-navbar {
+      background: var(--ed-cream);
+      border-bottom: 1px solid var(--ed-rule);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 0;
+      overflow-x: auto;
+    }
+    .ed-navbar a {
+      display: block;
+      padding: 12px 20px;
+      font-family: var(--af-font-sans);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--ed-muted);
+      text-decoration: none;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      transition: all 150ms;
+    }
+    .ed-navbar a:hover {
+      color: var(--ed-ink);
+      border-bottom-color: var(--ed-amber);
+    }
+
+    /* ==============================
+       LAYOUT SHELL
+       ============================== */
+    .ed-wrap {
+      max-width: var(--ed-column);
+      margin: 0 auto;
+      padding: 0 var(--af-space-6);
+    }
+    .ed-wide {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 var(--af-space-6);
+    }
+
+    /* ==============================
+       SECTION HELPERS
+       ============================== */
+    .ed-section {
+      padding: var(--af-space-16) 0;
+      border-bottom: 1px solid var(--ed-rule);
+    }
+    .ed-section:last-child { border-bottom: none; }
+
+    .ed-section-label {
+      font-family: var(--af-font-sans);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ed-amber);
+      margin-bottom: var(--af-space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--af-space-3);
+    }
+    .ed-section-label::before,
+    .ed-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--ed-rule);
+    }
+
+    h1, h2, h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--ed-ink);
+    }
+    h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; }
+    h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); }
+    h3 { font-size: 1.4rem; }
+
+    p { margin-bottom: var(--af-space-5); }
+    p:last-child { margin-bottom: 0; }
+
+    /* ==============================
+       HERO / INTRO
+       ============================== */
+    .ed-hero {
+      padding: var(--af-space-16) 0 var(--af-space-8);
+      border-bottom: 3px double var(--ed-rule);
+    }
+    .ed-hero__date-line {
+      font-family: var(--af-font-sans);
+      font-size: 12px;
+      color: var(--ed-muted);
+      margin-bottom: var(--af-space-6);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .ed-hero__title {
+      margin-bottom: var(--af-space-6);
+    }
+    .ed-hero__deck {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: var(--ed-muted);
+      border-top: 1px solid var(--ed-rule);
+      padding-top: var(--af-space-5);
+      margin-bottom: var(--af-space-6);
+    }
+    .ed-hero__byline {
+      font-family: var(--af-font-sans);
+      font-size: 12px;
+      color: var(--ed-muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      display: flex;
+      gap: var(--af-space-4);
+      align-items: center;
+    }
+    .ed-hero__byline strong { color: var(--ed-ink); }
+    .ed-hero__byline span { color: var(--ed-rule); }
+
+    /* CTA buttons */
+    .ed-btn-row {
+      display: flex; gap: var(--af-space-4); flex-wrap: wrap;
+      margin-top: var(--af-space-8);
+    }
+    .ed-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 24px;
+      font-family: var(--af-font-sans);
+      font-size: 13px; font-weight: 700;
+      text-decoration: none;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      transition: all 150ms;
+      cursor: pointer; border: 2px solid;
+    }
+    .ed-btn--primary { background: var(--ed-amber); color: #fff; border-color: var(--ed-amber); }
+    .ed-btn--primary:hover { background: var(--ed-red); border-color: var(--ed-red); }
+    .ed-btn--ghost { background: transparent; color: var(--ed-ink); border-color: var(--ed-ink); }
+    .ed-btn--ghost:hover { background: var(--ed-ink); color: var(--ed-cream); }
+
+    /* ==============================
+       PULL QUOTE
+       ============================== */
+    .ed-pullquote {
+      margin: var(--af-space-10) calc(-1 * var(--af-space-8));
+      padding: var(--af-space-8) var(--af-space-12);
+      background: var(--ed-amber-lt);
+      border-top: 3px solid var(--ed-amber);
+      border-bottom: 3px solid var(--ed-amber);
+      text-align: center;
+    }
+    .ed-pullquote__text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1.35;
+      color: var(--ed-amber);
+      margin-bottom: var(--af-space-3);
+    }
+    .ed-pullquote__attr {
+      font-family: var(--af-font-sans);
+      font-size: 12px;
+      color: var(--ed-muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    /* ==============================
+       DROP CAP
+       ============================== */
+    .ed-dropcap::first-letter {
+      float: left;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 5.5rem;
+      font-weight: 900;
+      line-height: .75;
+      margin: .1em .15em -.05em 0;
+      color: var(--ed-amber);
+    }
+
+    /* ==============================
+       FULL-BLEED BANNER
+       ============================== */
+    .ed-bleed {
+      background: var(--ed-ink);
+      color: var(--ed-cream);
+      margin: var(--af-space-12) 0;
+      padding: var(--af-space-10) 0;
+    }
+    .ed-bleed .ed-wide {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--af-space-12);
+      align-items: center;
+    }
+    .ed-bleed__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 900;
+      margin-bottom: var(--af-space-4);
+    }
+    .ed-bleed__body {
+      font-size: 15px;
+      color: rgba(255,255,255,.7);
+      line-height: 1.7;
+      font-family: var(--af-font-sans);
+    }
+
+    /* Stat grid in bleed */
+    .ed-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--af-space-1);
+    }
+    .ed-stat-cell {
+      padding: var(--af-space-6);
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      text-align: center;
+    }
+    .ed-stat-value {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--ed-amber);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .ed-stat-label {
+      font-family: var(--af-font-sans);
+      font-size: 11px;
+      color: rgba(255,255,255,.5);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    /* ==============================
+       SIDEBAR INSET (wide layout)
+       ============================== */
+    .ed-inset-wrap {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: var(--af-space-10);
+      align-items: start;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 var(--af-space-6);
+    }
+    .ed-sidebar {
+      border: 1px solid var(--ed-rule);
+      padding: var(--af-space-6);
+      background: var(--ed-paper);
+    }
+    .ed-sidebar__title {
+      font-family: var(--af-font-sans);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ed-muted);
+      margin-bottom: var(--af-space-5);
+      padding-bottom: var(--af-space-3);
+      border-bottom: 1px solid var(--ed-rule);
+    }
+    .ed-sidebar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: var(--af-space-2) 0;
+      border-bottom: 1px dotted var(--ed-rule);
+      font-family: var(--af-font-sans);
+      font-size: 13px;
+    }
+    .ed-sidebar-row:last-child { border-bottom: none; }
+    .ed-sidebar-row__label { color: var(--ed-muted); }
+    .ed-sidebar-row__value { font-weight: 700; color: var(--ed-ink); }
+
+    /* ==============================
+       ARCHITECTURE EDITORIAL STYLE
+       ============================== */
+    .ed-arch-list {
+      list-style: none;
+      counter-reset: arch;
+      margin: var(--af-space-8) 0;
+    }
+    .ed-arch-list li {
+      counter-increment: arch;
+      display: flex;
+      gap: var(--af-space-6);
+      align-items: flex-start;
+      padding: var(--af-space-5) 0;
+      border-bottom: 1px solid var(--ed-rule);
+    }
+    .ed-arch-list li:last-child { border-bottom: none; }
+    .ed-arch-list li::before {
+      content: counter(arch, upper-roman);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ed-amber);
+      width: 3rem;
+      flex-shrink: 0;
+      line-height: 1;
+      padding-top: 2px;
+    }
+    .ed-arch-list__title {
+      font-family: var(--af-font-sans);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .ed-arch-list__body {
+      font-size: 15px;
+      color: var(--ed-muted);
+      line-height: 1.65;
+      font-family: var(--af-font-sans);
+    }
+
+    /* ==============================
+       TESTIMONIAL
+       ============================== */
+    .ed-testimonial {
+      background: var(--ed-paper);
+      border: 1px solid var(--ed-rule);
+      border-left: 4px solid var(--ed-amber);
+      padding: var(--af-space-8);
+      margin: var(--af-space-8) 0;
+    }
+    .ed-testimonial__quote {
+      font-style: italic;
+      font-size: 1.1rem;
+      line-height: 1.65;
+      margin-bottom: var(--af-space-5);
+    }
+    .ed-testimonial__author {
+      display: flex;
+      align-items: center;
+      gap: var(--af-space-4);
+    }
+    .ed-testimonial__avatar {
+      width: 42px; height: 42px;
+      background: var(--ed-amber);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-family: var(--af-font-sans);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .ed-testimonial__name {
+      font-family: var(--af-font-sans);
+      font-size: 13px; font-weight: 700;
+    }
+    .ed-testimonial__role {
+      font-family: var(--af-font-sans);
+      font-size: 12px; color: var(--ed-muted);
+    }
+
+    /* ==============================
+       CTA
+       ============================== */
+    .ed-cta-wrap {
+      background: var(--ed-ink);
+      padding: var(--af-space-16) 0;
+    }
+    .ed-cta {
+      max-width: var(--ed-column);
+      margin: 0 auto;
+      padding: 0 var(--af-space-6);
+      text-align: center;
+      color: var(--ed-cream);
+    }
+    .ed-cta__eyebrow {
+      font-family: var(--af-font-sans);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ed-amber);
+      margin-bottom: var(--af-space-4);
+    }
+    .ed-cta__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: var(--af-space-4);
+    }
+    .ed-cta__body {
+      font-size: 15px;
+      color: rgba(255,255,255,.6);
+      line-height: 1.65;
+      font-family: var(--af-font-sans);
+      margin-bottom: var(--af-space-8);
+    }
+
+    /* ==============================
+       FOOTER
+       ============================== */
+    .ed-footer {
+      background: var(--ed-ink);
+      border-top: 1px solid #333;
+      padding: var(--af-space-8) var(--af-space-8) var(--af-space-10);
+      text-align: center;
+      color: rgba(255,255,255,.4);
+      font-family: var(--af-font-sans);
+      font-size: 12px;
+    }
+    .ed-footer a { color: var(--ed-amber); }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .ed-bleed .ed-wide, .ed-inset-wrap { grid-template-columns: 1fr; }
+      .ed-pullquote { margin-left: 0; margin-right: 0; }
+    }
+    @media (max-width: 540px) {
+      body { font-size: 16px; }
+      .ed-stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a class="back-link no-print" href="../index.html">← Catalog</a>
+
+  <!-- Masthead -->
+  <header role="banner">
+    <div class="ed-masthead">
+      <p class="ed-masthead__kicker">Strategic technology review</p>
+      <div class="ed-masthead__name">AtlasFlow</div>
+      <p class="ed-masthead__tagline">The project intelligence platform for distributed teams</p>
+    </div>
+    <nav class="ed-navbar" aria-label="Section navigation">
+      <a href="#hero">Overview</a>
+      <a href="#problem">The Problem</a>
+      <a href="#insight">Market Insight</a>
+      <a href="#solution">The Solution</a>
+      <a href="#proof">Proof</a>
+      <a href="#cta">Get Started</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ==================== HERO ==================== -->
+    <section id="hero" class="ed-section" aria-labelledby="hero-heading">
+      <div class="ed-wrap">
+        <div class="ed-hero">
+          <p class="ed-hero__date-line">Q1 2025 · Strategic deep-dive · 7-minute read</p>
+          <h1 class="ed-hero__title" id="hero-heading">
+            One workspace.<br/>Every team.<br/>Zero chaos.
+          </h1>
+          <p class="ed-hero__deck">
+            How AtlasFlow untangles the fragmented toolstacks costing distributed enterprises
+            11 hours of productivity per employee, per week — and delivers projects three times faster.
+          </p>
+          <div class="ed-hero__byline">
+            <strong>AtlasFlow Editorial</strong>
+            <span>·</span>
+            <span>March 2025</span>
+            <span>·</span>
+            <span>Enterprise · Productivity · SaaS</span>
+          </div>
+          <div class="ed-btn-row">
+            <a href="#cta" class="ed-btn ed-btn--primary">Book a demo</a>
+            <a href="#proof" class="ed-btn ed-btn--ghost">Read the proof</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== EXEC SUMMARY ==================== -->
+    <section id="exec" class="ed-section" aria-labelledby="exec-heading">
+      <div class="ed-wrap">
+        <p class="ed-section-label">Executive summary</p>
+        <h2 id="exec-heading">The operating system distributed teams have been waiting for</h2>
+        <p class="ed-dropcap">
+          The modern enterprise runs on distributed talent — engineers in Berlin, designers in São
+          Paulo, product managers in Toronto. But the toolstack has not kept pace. Project managers
+          toggle between five or more platforms daily, context dissolves in Slack threads, and
+          leadership remains blind to risk until a deadline has already slipped.
+        </p>
+        <p>
+          AtlasFlow is the answer: a unified project intelligence platform that replaces the patchwork
+          of standalone tools with a single source of truth. Live project dashboards, structured
+          async workflows, and AI-assisted risk flagging — connected to the systems your teams
+          already use, without a rip-and-replace migration.
+        </p>
+
+        <div class="ed-pullquote" role="note">
+          <p class="ed-pullquote__text">
+            "AtlasFlow reduced our average project delivery time by 3× while cutting weekly
+            status meetings from five to one."
+          </p>
+          <p class="ed-pullquote__attr">Miriam Ochsner · VP Engineering, Steelman Labs</p>
+        </div>
+
+        <p>
+          The results are measurable and consistent: across more than 2,400 active teams, AtlasFlow
+          customers report a 3× improvement in on-time project delivery and a 40% reduction in
+          weekly status meetings — within 90 days of onboarding. The platform carries a 99.9%
+          uptime SLA and is SOC 2 Type II certified, making it ready for the most demanding
+          enterprise procurement requirements.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== PROBLEM ==================== -->
+    <section id="problem" class="ed-section" aria-labelledby="problem-heading">
+      <div class="ed-inset-wrap">
+        <div>
+          <p class="ed-section-label">The problem</p>
+          <h2 id="problem-heading">Fragmented tools. Invisible progress. Mounting debt.</h2>
+          <p>
+            The average enterprise team uses 8.4 separate project-related tools. Every handoff
+            between them loses context, creates duplicate work, and slows the decisions that keep
+            projects on track. The resulting fragmentation is not merely inconvenient — it is
+            financially catastrophic.
+          </p>
+          <p>
+            Eleven hours. That is how much productive time the average distributed employee loses
+            each week to tool-switching, redundant status reporting, and the frictionful search
+            for information that should be immediately available.
+          </p>
+          <p>
+            Worse still: 63% of project managers report they learn about blockers only after
+            deadlines have already slipped. The data exists — buried in spreadsheets, Jira boards,
+            and Slack channels — but there is no single layer to surface it before damage is done.
+          </p>
+          <h3 style="margin-top: var(--af-space-8);">The compounding cost of async debt</h3>
+          <p>
+            Remote and hybrid teams accumulate a form of "communication debt" — decisions buried
+            in chat threads, rationale that was never documented, tribal knowledge that walks out
+            the door with every departing employee. The problem is structural, not cultural, and
+            it requires a structural solution.
+          </p>
+        </div>
+        <aside class="ed-sidebar" aria-label="Problem statistics">
+          <p class="ed-sidebar__title">By the numbers</p>
+          <div class="ed-sidebar-row">
+            <span class="ed-sidebar-row__label">Hours lost / week</span>
+            <span class="ed-sidebar-row__value">11h</span>
+          </div>
+          <div class="ed-sidebar-row">
+            <span class="ed-sidebar-row__label">PMs miss blockers</span>
+            <span class="ed-sidebar-row__value">63%</span>
+          </div>
+          <div class="ed-sidebar-row">
+            <span class="ed-sidebar-row__label">Tools per team</span>
+            <span class="ed-sidebar-row__value">8.4</span>
+          </div>
+          <div class="ed-sidebar-row">
+            <span class="ed-sidebar-row__label">Avg. tool cost / seat</span>
+            <span class="ed-sidebar-row__value">$680/yr</span>
+          </div>
+          <div class="ed-sidebar-row">
+            <span class="ed-sidebar-row__label">Integration failures / mo</span>
+            <span class="ed-sidebar-row__value">14</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ==================== INSIGHT ==================== -->
+    <section id="insight" class="ed-section" aria-labelledby="insight-heading">
+      <div class="ed-wrap">
+        <p class="ed-section-label">Market insight</p>
+        <h2 id="insight-heading">The consolidation decade is underway</h2>
+        <p>
+          The work management platform market is not merely growing — it is consolidating. Gartner
+          projects the sector will reach $42B by 2028, expanding at a 19% CAGR. But the more
+          significant signal is behavioural: 71% of enterprise buyers are actively seeking to reduce
+          the number of vendors they use, and they are willing to pay a 28% premium for a platform
+          that can replace three or more point solutions.
+        </p>
+        <p>
+          This is the moment AtlasFlow was built for. The platform is mature enough to satisfy
+          enterprise security and compliance requirements — SOC 2 Type II, SSO, SCIM provisioning,
+          regional data residency — yet agile enough to compete for fast-moving engineering
+          organisations that value shipping speed above all else.
+        </p>
+
+        <div class="ed-pullquote" role="note">
+          <p class="ed-pullquote__text">
+            "The next decade of enterprise productivity will be won not by adding more tools,
+            but by collapsing them into a single intelligent layer."
+          </p>
+          <p class="ed-pullquote__attr">AtlasFlow founding thesis · 2021</p>
+        </div>
+
+        <p>
+          AtlasFlow's $18.4M ARR and +214% year-over-year growth rate confirm that the thesis is
+          correct and the timing is right. With a Net Revenue Retention of 134%, the business is
+          not just acquiring customers — it is expanding within them, a signal that the product
+          delivers on its promise of consolidation.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== SOLUTION ==================== -->
+    <section id="solution" class="ed-section" aria-labelledby="solution-heading">
+      <div class="ed-wrap">
+        <p class="ed-section-label">Solution &amp; architecture</p>
+        <h2 id="solution-heading">Four layers of intelligence, one workspace</h2>
+        <p>
+          AtlasFlow's architecture is deliberately layered, allowing teams to adopt the platform
+          incrementally and at their own pace — while still delivering immediate value from the
+          moment the first integration is connected.
+        </p>
+      </div>
+
+      <!-- Full-bleed architecture section -->
+      <div class="ed-bleed" role="region" aria-label="Architecture overview">
+        <div class="ed-wide">
+          <div>
+            <h3 class="ed-bleed__title">A platform built on four principles</h3>
+            <p class="ed-bleed__body">
+              Every architectural decision in AtlasFlow traces back to a single conviction:
+              that project intelligence should be continuous, not periodic. The platform
+              processes events in real time, surfaces risk before it becomes crisis, and
+              renders everything in a workspace that requires no training to navigate.
+            </p>
+          </div>
+          <div class="ed-stat-grid" role="list" aria-label="Architecture metrics">
+            <div class="ed-stat-cell" role="listitem">
+              <div class="ed-stat-value">60+</div>
+              <div class="ed-stat-label">Native integrations</div>
+            </div>
+            <div class="ed-stat-cell" role="listitem">
+              <div class="ed-stat-value">15m</div>
+              <div class="ed-stat-label">Intelligence refresh rate</div>
+            </div>
+            <div class="ed-stat-cell" role="listitem">
+              <div class="ed-stat-value">14d</div>
+              <div class="ed-stat-label">Average risk early warning</div>
+            </div>
+            <div class="ed-stat-cell" role="listitem">
+              <div class="ed-stat-value">SOC 2</div>
+              <div class="ed-stat-label">Type II certified</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ed-wrap">
+        <ol class="ed-arch-list" role="list" aria-label="Architecture layers">
+          <li>
+            <div>
+              <p class="ed-arch-list__title">Data ingestion layer</p>
+              <p class="ed-arch-list__body">Native two-way connectors to GitHub, Jira, Slack, Google Workspace, and 60 more tools. All project signals flow into AtlasFlow in real time — no polling, no manual imports, no drift.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="ed-arch-list__title">Intelligence engine</p>
+              <p class="ed-arch-list__body">Machine learning models score project risk, detect deadline drift, and forecast capacity constraints — updated every 15 minutes from the live event stream. Teams receive risk alerts an average of 14 days before a deadline is at risk.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="ed-arch-list__title">Unified workspace</p>
+              <p class="ed-arch-list__body">Kanban, Gantt, and list views coexist in a single interface. Structured async update templates replace ad-hoc status meetings — each update is automatically linked to the relevant projects, tasks, and decisions.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="ed-arch-list__title">Executive reporting</p>
+              <p class="ed-arch-list__body">Portfolio-level RAG dashboards with budget burn rates, on-time delivery percentages, and team velocity metrics. Shareable via a single link — no login required for external stakeholders.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ==================== PROOF ==================== -->
+    <section id="proof" class="ed-section" aria-labelledby="proof-heading">
+      <div class="ed-wrap">
+        <p class="ed-section-label">Proof &amp; metrics</p>
+        <h2 id="proof-heading">The evidence is in</h2>
+        <p>
+          Outcomes averaged across 2,400+ active teams, measured at 90 days post-onboarding.
+          The numbers below represent the median improvement, not the top decile.
+        </p>
+      </div>
+
+      <div class="ed-bleed" role="region" aria-label="Proof metrics">
+        <div class="ed-wide" style="grid-template-columns: 1fr 1fr; display: grid; gap: var(--af-space-12); align-items: center;">
+          <div>
+            <div class="ed-stat-grid" role="list" aria-label="Performance metrics">
+              <div class="ed-stat-cell" role="listitem">
+                <div class="ed-stat-value">3×</div>
+                <div class="ed-stat-label">Faster project delivery</div>
+              </div>
+              <div class="ed-stat-cell" role="listitem">
+                <div class="ed-stat-value">40%</div>
+                <div class="ed-stat-label">Fewer status meetings</div>
+              </div>
+              <div class="ed-stat-cell" role="listitem">
+                <div class="ed-stat-value">2,400+</div>
+                <div class="ed-stat-label">Active teams</div>
+              </div>
+              <div class="ed-stat-cell" role="listitem">
+                <div class="ed-stat-value">99.9%</div>
+                <div class="ed-stat-label">Uptime SLA</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <figure class="ed-testimonial" style="background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.15);">
+              <blockquote class="ed-testimonial__quote" style="color: rgba(255,255,255,.85);">
+                "Before AtlasFlow, I was running five status calls a week just to understand
+                where each project stood. Now I check a single dashboard at 9am and I know
+                everything. The time I've reclaimed is remarkable."
+              </blockquote>
+              <figcaption class="ed-testimonial__author">
+                <div class="ed-testimonial__avatar" aria-hidden="true">MO</div>
+                <div>
+                  <p class="ed-testimonial__name" style="color:#fff;">Miriam Ochsner</p>
+                  <p class="ed-testimonial__role" style="color:rgba(255,255,255,.5);">VP Engineering · Steelman Labs · 340 engineers</p>
+                </div>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CTA ==================== -->
+    <section id="cta" aria-labelledby="cta-heading">
+      <div class="ed-cta-wrap">
+        <div class="ed-cta">
+          <p class="ed-cta__eyebrow">Next steps</p>
+          <h2 class="ed-cta__title" id="cta-heading">
+            Ready to unify<br/>your delivery?
+          </h2>
+          <p class="ed-cta__body">
+            Join 2,400+ teams that have moved to a single workspace.<br/>
+            Free 30-day trial · No credit card required · Setup in under 10 minutes.
+          </p>
+          <div class="ed-btn-row" style="justify-content: center;">
+            <a href="#" class="ed-btn ed-btn--primary">Book a strategic demo</a>
+            <a href="#" class="ed-btn" style="background:transparent; color:#fff; border-color: rgba(255,255,255,.4);">Start free trial</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="ed-footer" role="contentinfo">
+    <p>© 2025 AtlasFlow, Inc. · All rights reserved</p>
+    <p style="margin-top:8px;">
+      <a href="../index.html">← Back to template catalog</a>
+    </p>
+  </footer>
+</body>
+</html>
