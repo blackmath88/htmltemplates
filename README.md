@@ -1,4 +1,14 @@
+<!-- BEGIN public-repo-header -->
+<div align="center">
+
 # AtlasFlow Template Catalog
+
+<a href="https://github.com/blackmath88/htmltemplates"><img alt="Primary language: HTML" src="https://img.shields.io/badge/language-HTML-526078?style=flat"></a>
+<a href="https://github.com/blackmath88/htmltemplates#readme"><img alt="README" src="https://img.shields.io/badge/docs-readme-16796f?style=flat"></a>
+<a href="https://github.com/blackmath88/htmltemplates/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/blackmath88/htmltemplates?style=flat&amp;color=737373"></a>
+
+</div>
+<!-- END public-repo-header -->
 
 A static HTML template catalog — five polished pitch and presentation templates built around a shared fictional product narrative (**AtlasFlow**). GitHub Pages–ready, no backend, no build step.
 
